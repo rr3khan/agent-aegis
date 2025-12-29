@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	defaultAegisURL  = "http://localhost:8080"
+	defaultAegisURL  = "http://localhost:8081"
 	defaultOllamaURL = "http://localhost:11434"
 	defaultModel     = "llama3.1:8b"
 	jwtSecret        = "aegis-dev-secret-do-not-use-in-prod"

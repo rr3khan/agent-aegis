@@ -127,8 +127,8 @@ tasks:
         sleep 1
 
         # Start Aegis in background  
-        echo "Starting Agent Aegis on :8080..."
-        ./bin/{{.BINARY_NAME}} --port 8080 --executor-url http://localhost:8082 &
+        echo "Starting Agent Aegis on :8081..."
+        ./bin/{{.BINARY_NAME}} --port 8081 --executor-url http://localhost:8082 &
         AEGIS_PID=$!
         sleep 1
 
@@ -140,7 +140,7 @@ tasks:
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo "✅ Test 1: ALLOWED - get_weather (has tools:demo:read)"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        curl -s -X POST http://localhost:8080/execute \
+        curl -s -X POST http://localhost:8081/execute \
           -H "Authorization: Bearer $TOKEN" \
           -H "Content-Type: application/json" \
           -d '{"tool": "get_weather", "args": {"location": "London"}}' | jq .
@@ -149,7 +149,7 @@ tasks:
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo "🚫 Test 2: DENIED - list_issues (missing tools:issues:read)"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        curl -s -X POST http://localhost:8080/execute \
+        curl -s -X POST http://localhost:8081/execute \
           -H "Authorization: Bearer $TOKEN" \
           -H "Content-Type: application/json" \
           -d '{"tool": "list_issues", "args": {"project": "demo"}}' | jq .
@@ -158,7 +158,7 @@ tasks:
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo "🚫 Test 3: DENIED - unknown tool (not in policy)"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        curl -s -X POST http://localhost:8080/execute \
+        curl -s -X POST http://localhost:8081/execute \
           -H "Authorization: Bearer $TOKEN" \
           -H "Content-Type: application/json" \
           -d '{"tool": "hack_the_planet", "args": {}}' | jq .
@@ -176,7 +176,7 @@ tasks:
   demo:ollama:
     desc: Run the Ollama E2E demo (requires Ollama + services running)
     cmds:
-      - AEGIS_URL=http://localhost:8080 go run ./examples/ollama-demo/main.go
+      - AEGIS_URL=http://localhost:8081 go run ./examples/ollama-demo/main.go
 
   demo:e2e:
     desc: Run full E2E demo with Ollama (uses llama3.1:8b)
@@ -197,7 +197,7 @@ tasks:
         sleep 1
 
         echo "Running Ollama demo with llama3.1:8b..."
-        AEGIS_URL=http://localhost:8080 OLLAMA_MODEL=llama3.1:8b go run ./examples/ollama-demo/main.go
+        AEGIS_URL=http://localhost:8081 OLLAMA_MODEL=llama3.1:8b go run ./examples/ollama-demo/main.go
 
         echo "Demo complete! Cleaning up..."
         pkill -f "aegis-mock-executor" 2>/dev/null || true
