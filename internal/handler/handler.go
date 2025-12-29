@@ -270,9 +270,8 @@ func (h *Handler) writeError(w http.ResponseWriter, requestID string, statusCode
 	writeJSON(w, statusCode, resp)
 }
 
-// writeJSON writes a JSON response.
 func writeJSON(w http.ResponseWriter, statusCode int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(data)
+	_ = json.NewEncoder(w).Encode(data) // Error ignored: can't recover if connection closed
 }

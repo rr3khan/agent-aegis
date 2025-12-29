@@ -39,7 +39,7 @@ func main() {
 }
 
 func handleHealth(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(map[string]string{
+	_ = json.NewEncoder(w).Encode(map[string]string{
 		"status": "ok",
 		"type":   "mock-executor",
 	})
@@ -67,7 +67,7 @@ func handleExecute(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(Response{
+	_ = json.NewEncoder(w).Encode(Response{
 		OK:     true,
 		Result: result,
 	})
@@ -245,7 +245,7 @@ func getIntArg(args map[string]interface{}, key string, defaultValue int) int {
 func writeError(w http.ResponseWriter, message string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusBadRequest)
-	json.NewEncoder(w).Encode(Response{
+	_ = json.NewEncoder(w).Encode(Response{
 		OK:    false,
 		Error: message,
 	})
