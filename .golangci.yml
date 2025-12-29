@@ -1,0 +1,35 @@
+run:
+  timeout: 5m
+
+linters:
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - unused
+    - ineffassign
+    - gosimple
+    - gosec
+
+linters-settings:
+  errcheck:
+    # Ignore specific functions where errors are intentionally not checked
+    exclude-functions:
+      # Logging errors - failures shouldn't crash the app
+      - (*github.com/rr3khan/agent-aegis/internal/audit.Logger).Log
+      - (*github.com/rr3khan/agent-aegis/internal/audit.BufferedLogger).Log
+      - (*github.com/rr3khan/agent-aegis/internal/audit.Logger).LogRequest
+      - (*github.com/rr3khan/agent-aegis/internal/audit.Logger).LogAuthorization
+      - (*github.com/rr3khan/agent-aegis/internal/audit.Logger).LogExecution
+      - (*github.com/rr3khan/agent-aegis/internal/audit.Logger).LogResponse
+      - (*github.com/rr3khan/agent-aegis/internal/audit.Logger).LogError
+      # HTTP response writing - can't recover if connection is closed
+      - (*net/http.ResponseWriter).Write
+      - (*encoding/json.Encoder).Encode
+
+issues:
+  exclude-rules:
+    # Test files can be less strict
+    - path: _test\.go
+      linters:
+        - errcheck
