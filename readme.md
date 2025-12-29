@@ -223,9 +223,11 @@ tools:
 | `AEGIS_PORT`         | `8081`                  | Server port                          |
 | `AEGIS_HOST`         | ``                      | Server host (empty = all interfaces) |
 | `AEGIS_POLICY_FILE`  | `config/policy.yaml`    | Policy file path                     |
-| `AEGIS_DEV_SECRET`   | `aegis-dev-secret...`   | Development JWT secret               |
+| `AEGIS_DEV_SECRET`   | `aegis-dev-secret...`   | Development JWT secret ⚠️            |
 | `AEGIS_EXECUTOR_URL` | `` (uses mock executor) | Downstream executor URL              |
 | `AEGIS_AUDIT_LOG`    | ``                      | Audit log file (empty = stdout)      |
+
+> ⚠️ **Security Warning:** The default `AEGIS_DEV_SECRET` is for local development only. In production, use OIDC/JWKS with proper key management. Never use the default secret in production environments.
 
 ### Command Line Flags
 
