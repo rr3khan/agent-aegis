@@ -11,11 +11,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/riyadkhan/agent-aegis/internal/audit"
-	"github.com/riyadkhan/agent-aegis/internal/auth"
-	"github.com/riyadkhan/agent-aegis/internal/executor"
-	"github.com/riyadkhan/agent-aegis/internal/policy"
-	"github.com/riyadkhan/agent-aegis/internal/validation"
+	"github.com/rr3khan/agent-aegis/internal/audit"
+	"github.com/rr3khan/agent-aegis/internal/auth"
+	"github.com/rr3khan/agent-aegis/internal/executor"
+	"github.com/rr3khan/agent-aegis/internal/policy"
+	"github.com/rr3khan/agent-aegis/internal/validation"
 )
 
 const testSecret = "test-secret"

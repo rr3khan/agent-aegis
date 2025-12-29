@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/riyadkhan/agent-aegis/internal/auth"
+	"github.com/rr3khan/agent-aegis/internal/auth"
 )
 
 const (

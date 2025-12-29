@@ -1,4 +1,4 @@
-module github.com/riyadkhan/agent-aegis
+module github.com/rr3khan/agent-aegis
 
 go 1.25
 
