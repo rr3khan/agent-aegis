@@ -27,7 +27,7 @@ type Response struct {
 func main() {
 	port := os.Getenv("EXECUTOR_PORT")
 	if port == "" {
-		port = "8081"
+		port = "8082"
 	}
 
 	http.HandleFunc("/execute", handleExecute)
