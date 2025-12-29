@@ -16,8 +16,8 @@ var (
 	ErrInvalidPolicy     = errors.New("invalid policy configuration")
 	ErrToolNotAllowed    = errors.New("tool not allowed by policy")
 	ErrMissingScope      = errors.New("missing required scope")
-	ErrIssuerNotAllowed  = errors.New("issuer not in allowlist")
-	ErrSubjectNotAllowed = errors.New("subject not in allowlist")
+	ErrIssuerNotAllowed  = errors.New("issuer not in nicelist")
+	ErrSubjectNotAllowed = errors.New("subject not in nicelist")
 )
 
 // Policy represents the complete policy configuration.
@@ -61,7 +61,7 @@ type DefaultPolicy struct {
 	// DenyMissingScopes denies calls when required scope is missing (recommended: true).
 	DenyMissingScopes bool `yaml:"deny_missing_scopes"`
 
-	// AllowedIssuers is a global allowlist for token issuers.
+	// AllowedIssuers is a global nicelist for token issuers.
 	AllowedIssuers []string `yaml:"allowed_issuers,omitempty"`
 
 	// AllowedAudiences restricts which audiences are accepted.
@@ -163,7 +163,7 @@ func (p *Policy) Authorize(req AuthorizationRequest) Decision {
 		}
 	}
 
-	// Check issuer allowlist (tool-level)
+	// Check issuer nicelist (tool-level)
 	if len(toolPolicy.AllowedIssuers) > 0 {
 		if !contains(toolPolicy.AllowedIssuers, req.Issuer) {
 			return Decision{
@@ -175,7 +175,7 @@ func (p *Policy) Authorize(req AuthorizationRequest) Decision {
 		}
 	}
 
-	// Check subject allowlist (tool-level)
+	// Check subject nicelist (tool-level)
 	if len(toolPolicy.AllowedSubjects) > 0 {
 		if !matchesSubject(toolPolicy.AllowedSubjects, req.Subject) {
 			return Decision{
@@ -251,9 +251,9 @@ func contains(slice []string, val string) bool {
 	return false
 }
 
-// matchesSubject checks if a subject matches an allowlist (supports wildcards).
-func matchesSubject(allowlist []string, subject string) bool {
-	for _, pattern := range allowlist {
+// matchesSubject checks if a subject matches an nicelist (supports wildcards).
+func matchesSubject(nicelist []string, subject string) bool {
+	for _, pattern := range nicelist {
 		if pattern == "*" {
 			return true
 		}

@@ -6,7 +6,7 @@ It's designed to sit _in front of_ a tool execution layer, so that:
 
 - the LLM can "request" actions,
 - but **only authorized identities** can execute them,
-- and execution is always constrained to an explicit allowlist with auditable decisions.
+- and execution is always constrained to an explicit nicelist with auditable decisions.
 
 ---
 

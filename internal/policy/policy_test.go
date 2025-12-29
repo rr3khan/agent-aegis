@@ -240,7 +240,7 @@ func TestListTools(t *testing.T) {
 
 func TestMatchesSubject(t *testing.T) {
 	tests := []struct {
-		allowlist []string
+		nicelist []string
 		subject   string
 		expected  bool
 	}{
@@ -253,8 +253,8 @@ func TestMatchesSubject(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		result := matchesSubject(tt.allowlist, tt.subject)
-		assert.Equal(t, tt.expected, result, "allowlist=%v, subject=%s", tt.allowlist, tt.subject)
+		result := matchesSubject(tt.nicelist, tt.subject)
+		assert.Equal(t, tt.expected, result, "nicelist=%v, subject=%s", tt.nicelist, tt.subject)
 	}
 }
 

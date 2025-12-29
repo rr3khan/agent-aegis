@@ -1,0 +1,126 @@
+# Agent Aegis Policy Configuration
+# This file defines which tools are allowed and what scopes are required.
+
+defaults:
+  # Deny tools that are not explicitly listed (RECOMMENDED: true)
+  deny_unknown_tools: true
+
+  # Deny requests that don't have the required scope (RECOMMENDED: true)
+  deny_missing_scopes: true
+
+  # Optional: Global issuer nicelist
+  # allowed_issuers:
+  #   - "https://auth.example.com"
+  #   - "agent-aegis-dev"
+
+tools:
+  # Example: Read project status (low privilege)
+  get_protected_status:
+    description: "Get the status of a protected project"
+    required_scope: "tools:status:read"
+    arg_schema:
+      type: object
+      required:
+        - project
+      properties:
+        project:
+          type: string
+          minLength: 1
+          maxLength: 100
+
+  # Example: List issues (read privilege)
+  list_issues:
+    description: "List issues for a project"
+    required_scope: "tools:issues:read"
+    arg_schema:
+      type: object
+      required:
+        - project
+      properties:
+        project:
+          type: string
+        status:
+          type: string
+          enum: ["open", "closed", "all"]
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+
+  # Example: Create issue (write privilege)
+  create_issue:
+    description: "Create a new issue"
+    required_scope: "tools:issues:write"
+    arg_schema:
+      type: object
+      required:
+        - project
+        - title
+      properties:
+        project:
+          type: string
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 5000
+        priority:
+          type: string
+          enum: ["low", "medium", "high", "critical"]
+
+  # Example: Admin password reset (high privilege)
+  admin_reset_password:
+    description: "Reset a user's password (admin only)"
+    required_scope: "tools:admin:write"
+    allowed_subjects:
+      - "admin@example.com"
+      - "admin-*"
+    arg_schema:
+      type: object
+      required:
+        - user_id
+      properties:
+        user_id:
+          type: string
+          pattern: "^[a-zA-Z0-9-]+$"
+
+  # Example: Lookup incident (security team)
+  lookup_incident:
+    description: "Look up security incident details"
+    required_scope: "tools:incidents:read"
+    arg_schema:
+      type: object
+      required:
+        - incident_id
+      properties:
+        incident_id:
+          type: string
+          pattern: "^INC-[0-9]+$"
+
+  # Example: Get weather (public tool for demo)
+  get_weather:
+    description: "Get current weather for a location (demo tool)"
+    required_scope: "tools:demo:read"
+    arg_schema:
+      type: object
+      required:
+        - location
+      properties:
+        location:
+          type: string
+          minLength: 1
+
+  # Example: Calculate (public tool for demo)
+  calculate:
+    description: "Perform a calculation (demo tool)"
+    required_scope: "tools:demo:read"
+    arg_schema:
+      type: object
+      required:
+        - expression
+      properties:
+        expression:
+          type: string
+          pattern: "^[0-9+\\-*/().\\s]+$"
