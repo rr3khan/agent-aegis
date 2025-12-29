@@ -181,10 +181,21 @@ func loggingMiddleware(next http.Handler) http.Handler {
 
 type statusRecorder struct {
 	http.ResponseWriter
-	status int
+	status      int
+	wroteHeader bool
 }
 
 func (rec *statusRecorder) WriteHeader(code int) {
-	rec.status = code
-	rec.ResponseWriter.WriteHeader(code)
+	if !rec.wroteHeader {
+		rec.status = code
+		rec.wroteHeader = true
+		rec.ResponseWriter.WriteHeader(code)
+	}
+}
+
+func (rec *statusRecorder) Write(b []byte) (int, error) {
+	if !rec.wroteHeader {
+		rec.WriteHeader(http.StatusOK)
+	}
+	return rec.ResponseWriter.Write(b)
 }
