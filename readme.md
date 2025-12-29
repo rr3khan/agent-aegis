@@ -376,18 +376,3 @@ task lint
 # Build binary
 task build
 ```
-
----
-
-## Roadmap
-
-Future enhancements may include:
-
-- [ ] OIDC/JWKS integration for production deployments
-- [ ] Per-tool rate limits and quotas
-- [ ] Response schema validation
-- [ ] Multi-tenant policy support
-- [ ] OpenTelemetry audit sink integration
-- [ ] Admin API for policy hot-reload
-
----
