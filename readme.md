@@ -363,9 +363,32 @@ tools:
 
 ## Development
 
+### Quick Start Checklist
+
+| Step                   | Command                                          | Port    |
+| ---------------------- | ------------------------------------------------ | ------- |
+| 1. Install deps        | `task install-deps`                              | -       |
+| 2. Start mock executor | `task demo:executor`                             | `:8082` |
+| 3. Start Agent Aegis   | `task dev`                                       | `:8081` |
+| 4. Generate test token | `task generate:token -- -scopes tools:demo:read` | -       |
+| 5. Test request        | See below                                        | -       |
+
+```bash
+# Test a request
+curl -X POST http://localhost:8081/execute \
+  -H "Authorization: Bearer <your-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"tool": "get_weather", "args": {"location": "London"}}'
+```
+
+### Common Commands
+
 ```bash
 # Install Go dependencies
 go mod download
+
+# Run all tests
+task test
 
 # Run tests with coverage
 task test:unit
@@ -375,4 +398,7 @@ task lint
 
 # Build binary
 task build
+
+# Run full demo
+task demo:e2e
 ```
