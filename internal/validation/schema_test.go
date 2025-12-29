@@ -9,7 +9,7 @@ import (
 
 func TestValidateAgainstSchema_Object(t *testing.T) {
 	schema := &Schema{
-		Type: "object",
+		Type:     "object",
 		Required: []string{"name"},
 		Properties: map[string]*Schema{
 			"name": {Type: "string"},
@@ -160,7 +160,7 @@ func TestValidateAgainstSchema_TypeMismatch(t *testing.T) {
 
 func TestValidator_Register(t *testing.T) {
 	v := NewValidator()
-	
+
 	schema := &Schema{
 		Type:     "object",
 		Required: []string{"project"},
@@ -176,7 +176,7 @@ func TestValidator_Register(t *testing.T) {
 
 func TestValidator_Validate(t *testing.T) {
 	v := NewValidator()
-	
+
 	schema := &Schema{
 		Type:     "object",
 		Required: []string{"project"},
@@ -296,4 +296,3 @@ func TestNestedObjectValidation(t *testing.T) {
 	assert.False(t, result.Valid)
 	assert.Contains(t, result.Error(), "user.email")
 }
-

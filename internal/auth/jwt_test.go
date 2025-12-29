@@ -74,7 +74,7 @@ func TestVerifyToken_InvalidSignature(t *testing.T) {
 
 func TestVerifyToken_Expired(t *testing.T) {
 	secret := "test-secret"
-	
+
 	// Generate a token that expired 1 hour ago
 	token, err := GenerateDevToken(secret, "user@example.com", []string{"read"}, -time.Hour)
 	require.NoError(t, err)
@@ -154,7 +154,7 @@ func TestClaims_IdentitySummary(t *testing.T) {
 
 func TestVerifier_AllowedIssuers(t *testing.T) {
 	secret := "test-secret"
-	
+
 	token, err := GenerateDevToken(secret, "user@example.com", []string{"read"}, time.Hour)
 	require.NoError(t, err)
 
@@ -174,4 +174,3 @@ func TestVerifier_AllowedIssuers(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "user@example.com", claims.Subject)
 }
-

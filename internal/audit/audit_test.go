@@ -111,7 +111,7 @@ func TestLogger_LogExecutionWithError(t *testing.T) {
 	var buf bytes.Buffer
 	logger := NewLogger(&buf, false)
 
-	logger.LogExecution("req-123", "get_status", 100*time.Millisecond, 
+	logger.LogExecution("req-123", "get_status", 100*time.Millisecond,
 		assert.AnError)
 
 	var event Event
@@ -163,7 +163,7 @@ func TestGenerateRequestID(t *testing.T) {
 	assert.NotEmpty(t, id1)
 	assert.NotEmpty(t, id2)
 	assert.NotEqual(t, id1, id2)
-	
+
 	// Should be a valid UUID format
 	assert.Len(t, id1, 36) // UUID format: 8-4-4-4-12
 }
@@ -180,7 +180,7 @@ func TestMultiLogger(t *testing.T) {
 	// Both buffers should have the event
 	assert.NotEmpty(t, buf1.String())
 	assert.NotEmpty(t, buf2.String())
-	
+
 	// Both should contain the same request ID (don't compare timestamps)
 	assert.Contains(t, buf1.String(), "req-123")
 	assert.Contains(t, buf2.String(), "req-123")
@@ -222,4 +222,3 @@ func TestEvent_WithMetadata(t *testing.T) {
 	assert.Equal(t, "custom_value", event.Metadata["custom_field"])
 	assert.Equal(t, float64(42), event.Metadata["count"])
 }
-

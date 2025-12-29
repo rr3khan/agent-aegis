@@ -26,7 +26,7 @@ func setupTestHandler() (*Handler, *executor.MockExecutor, *audit.BufferedLogger
 
 	pol := &policy.Policy{
 		Tools: map[string]policy.ToolPolicy{
-			"get_status": {RequiredScope: "tools:status:read"},
+			"get_status":  {RequiredScope: "tools:status:read"},
 			"create_item": {RequiredScope: "tools:items:write"},
 		},
 		Defaults: policy.DefaultPolicy{
@@ -275,7 +275,7 @@ func TestHandler_Execute_AuditLogging(t *testing.T) {
 
 	// Check audit log contains expected events
 	events := auditLogger.Events()
-	
+
 	eventTypes := make(map[audit.EventType]bool)
 	for _, e := range events {
 		eventTypes[e.EventType] = true
@@ -285,4 +285,3 @@ func TestHandler_Execute_AuditLogging(t *testing.T) {
 	assert.True(t, eventTypes[audit.EventTypeAuthorize], "should log authorization")
 	assert.True(t, eventTypes[audit.EventTypeExecute], "should log execution")
 }
-

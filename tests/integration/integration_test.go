@@ -82,7 +82,7 @@ func TestIntegration_FullAllowedFlow(t *testing.T) {
 	defer aegisServer.Close()
 
 	// Generate valid token
-	token, err := auth.GenerateDevToken(testSecret, "test-agent@example.com", 
+	token, err := auth.GenerateDevToken(testSecret, "test-agent@example.com",
 		[]string{"tools:status:read"}, time.Hour)
 	require.NoError(t, err)
 
@@ -147,7 +147,7 @@ func TestIntegration_DeniedMissingScope(t *testing.T) {
 	defer server.Close()
 
 	// Generate token with wrong scope
-	token, _ := auth.GenerateDevToken(testSecret, "user@example.com", 
+	token, _ := auth.GenerateDevToken(testSecret, "user@example.com",
 		[]string{"tools:read:only"}, time.Hour)
 
 	reqBody := `{"tool": "admin_action", "args": {}}`
@@ -200,7 +200,7 @@ func TestIntegration_DeniedUnknownTool(t *testing.T) {
 	server := httptest.NewServer(h.Router())
 	defer server.Close()
 
-	token, _ := auth.GenerateDevToken(testSecret, "user@example.com", 
+	token, _ := auth.GenerateDevToken(testSecret, "user@example.com",
 		[]string{"tools:read", "tools:admin"}, time.Hour)
 
 	reqBody := `{"tool": "unknown_dangerous_tool", "args": {}}`
@@ -267,7 +267,7 @@ func TestIntegration_ExpiredToken(t *testing.T) {
 	defer server.Close()
 
 	// Generate expired token
-	token, _ := auth.GenerateDevToken(testSecret, "user@example.com", 
+	token, _ := auth.GenerateDevToken(testSecret, "user@example.com",
 		[]string{"tools:read"}, -time.Hour)
 
 	reqBody := `{"tool": "any_tool", "args": {}}`
@@ -315,7 +315,7 @@ func TestIntegration_SchemaValidation(t *testing.T) {
 	server := httptest.NewServer(h.Router())
 	defer server.Close()
 
-	token, _ := auth.GenerateDevToken(testSecret, "user@example.com", 
+	token, _ := auth.GenerateDevToken(testSecret, "user@example.com",
 		[]string{"tools:write"}, time.Hour)
 
 	tests := []struct {
@@ -355,4 +355,3 @@ func TestIntegration_SchemaValidation(t *testing.T) {
 		})
 	}
 }
-

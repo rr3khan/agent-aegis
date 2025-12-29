@@ -164,12 +164,12 @@ func getEnvOrDefault(key, defaultValue string) string {
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		
+
 		// Wrap response writer to capture status code
 		wrapped := &statusRecorder{ResponseWriter: w, status: http.StatusOK}
-		
+
 		next.ServeHTTP(wrapped, r)
-		
+
 		log.Printf("%s %s %d %s",
 			r.Method,
 			r.URL.Path,
@@ -188,4 +188,3 @@ func (rec *statusRecorder) WriteHeader(code int) {
 	rec.status = code
 	rec.ResponseWriter.WriteHeader(code)
 }
-

@@ -331,4 +331,3 @@ func formatResult(result map[string]interface{}) string {
 	}
 	return string(data)
 }
-

@@ -186,12 +186,12 @@ func validateType(value interface{}, expectedType string, path string) *Validati
 	}
 
 	actualType := getJSONType(value)
-	
+
 	// Allow integer where number is expected
 	if expectedType == "number" && actualType == "integer" {
 		return nil
 	}
-	
+
 	// Allow number where integer is expected (JSON unmarshals all numbers as float64)
 	if expectedType == "integer" && actualType == "number" {
 		// Check if it's actually a whole number
@@ -411,4 +411,3 @@ func DefaultToolSchema() *Schema {
 		Properties: make(map[string]*Schema),
 	}
 }
-

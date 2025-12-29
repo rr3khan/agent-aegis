@@ -233,7 +233,7 @@ func (p *Policy) GetToolPolicy(toolName string) (ToolPolicy, bool) {
 func (p *Policy) ListTools() []string {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
-	
+
 	tools := make([]string, 0, len(p.Tools))
 	for name := range p.Tools {
 		tools = append(tools, name)
@@ -286,4 +286,3 @@ func (p *Policy) Reload(path string) error {
 
 	return nil
 }
-

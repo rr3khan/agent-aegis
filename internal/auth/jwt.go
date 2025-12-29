@@ -15,13 +15,13 @@ import (
 )
 
 var (
-	ErrMissingToken       = errors.New("missing authorization token")
-	ErrInvalidToken       = errors.New("invalid token format")
-	ErrTokenExpired       = errors.New("token has expired")
-	ErrInvalidSignature   = errors.New("invalid token signature")
-	ErrMissingClaims      = errors.New("missing required claims")
-	ErrInvalidIssuer      = errors.New("invalid token issuer")
-	ErrInvalidAudience    = errors.New("invalid token audience")
+	ErrMissingToken     = errors.New("missing authorization token")
+	ErrInvalidToken     = errors.New("invalid token format")
+	ErrTokenExpired     = errors.New("token has expired")
+	ErrInvalidSignature = errors.New("invalid token signature")
+	ErrMissingClaims    = errors.New("missing required claims")
+	ErrInvalidIssuer    = errors.New("invalid token issuer")
+	ErrInvalidAudience  = errors.New("invalid token audience")
 )
 
 // Claims represents the JWT claims extracted from a token.
@@ -84,7 +84,7 @@ func (v *JWTVerifier) VerifyToken(tokenString string) (*Claims, error) {
 	}
 
 	// Parse and validate the token
-	token, err := jwt.Parse(tokenString, v.keyFunc, 
+	token, err := jwt.Parse(tokenString, v.keyFunc,
 		jwt.WithLeeway(v.ClockSkew),
 		jwt.WithExpirationRequired(),
 	)
@@ -289,4 +289,3 @@ func (c *Claims) MarshalJSON() ([]byte, error) {
 		Alias: (*Alias)(c),
 	})
 }
-

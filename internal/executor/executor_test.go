@@ -164,4 +164,3 @@ func TestNoopExecutor(t *testing.T) {
 	assert.True(t, resp.OK)
 	assert.True(t, resp.Result["noop"].(bool))
 }
-

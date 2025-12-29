@@ -241,8 +241,8 @@ func TestListTools(t *testing.T) {
 func TestMatchesSubject(t *testing.T) {
 	tests := []struct {
 		nicelist []string
-		subject   string
-		expected  bool
+		subject  string
+		expected bool
 	}{
 		{[]string{"admin@example.com"}, "admin@example.com", true},
 		{[]string{"admin@example.com"}, "user@example.com", false},
@@ -257,4 +257,3 @@ func TestMatchesSubject(t *testing.T) {
 		assert.Equal(t, tt.expected, result, "nicelist=%v, subject=%s", tt.nicelist, tt.subject)
 	}
 }
-

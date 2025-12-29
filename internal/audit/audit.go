@@ -16,11 +16,11 @@ import (
 type EventType string
 
 const (
-	EventTypeRequest    EventType = "request"
-	EventTypeAuthorize  EventType = "authorize"
-	EventTypeExecute    EventType = "execute"
-	EventTypeResponse   EventType = "response"
-	EventTypeError      EventType = "error"
+	EventTypeRequest   EventType = "request"
+	EventTypeAuthorize EventType = "authorize"
+	EventTypeExecute   EventType = "execute"
+	EventTypeResponse  EventType = "response"
+	EventTypeError     EventType = "error"
 )
 
 // Decision represents an authorization decision.
@@ -309,7 +309,7 @@ func (b *BufferedLogger) Clear() {
 func (b *BufferedLogger) FindByRequestID(requestID string) []*Event {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	
+
 	var result []*Event
 	for _, e := range b.events {
 		if e.RequestID == requestID {
@@ -318,4 +318,3 @@ func (b *BufferedLogger) FindByRequestID(requestID string) []*Event {
 	}
 	return result
 }
-
