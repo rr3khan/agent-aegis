@@ -143,7 +143,7 @@ func parseFlags() *Config {
 	flag.StringVar(&cfg.Host, "host", getEnvOrDefault("AEGIS_HOST", ""), "Server host")
 	flag.StringVar(&cfg.PolicyFile, "config", getEnvOrDefault("AEGIS_POLICY_FILE", "config/policy.yaml"), "Policy file path")
 	flag.StringVar(&cfg.DevSecret, "dev-secret", getEnvOrDefault("AEGIS_DEV_SECRET", "aegis-dev-secret-do-not-use-in-prod"), "Development JWT secret")
-	flag.StringVar(&cfg.ExecutorURL, "executor-url", getEnvOrDefault("AEGIS_EXECUTOR_URL", "http://localhost:8081"), "Downstream executor URL")
+	flag.StringVar(&cfg.ExecutorURL, "executor-url", getEnvOrDefault("AEGIS_EXECUTOR_URL", ""), "Downstream executor URL")
 	flag.DurationVar(&cfg.ExecutorTimeout, "executor-timeout", 30*time.Second, "Executor request timeout")
 	flag.StringVar(&cfg.AuditLogFile, "audit-log", getEnvOrDefault("AEGIS_AUDIT_LOG", ""), "Audit log file (empty for stdout)")
 	flag.BoolVar(&cfg.PrettyLogs, "pretty", false, "Pretty print JSON logs")

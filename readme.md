@@ -224,7 +224,7 @@ tools:
 | `AEGIS_HOST`         | ``                      | Server host (empty = all interfaces) |
 | `AEGIS_POLICY_FILE`  | `config/policy.yaml`    | Policy file path                     |
 | `AEGIS_DEV_SECRET`   | `aegis-dev-secret...`   | Development JWT secret               |
-| `AEGIS_EXECUTOR_URL` | `http://localhost:8081` | Downstream executor URL              |
+| `AEGIS_EXECUTOR_URL` | `` (uses mock executor) | Downstream executor URL              |
 | `AEGIS_AUDIT_LOG`    | ``                      | Audit log file (empty = stdout)      |
 
 ### Command Line Flags
