@@ -1,0 +1,241 @@
+version: "3"
+
+vars:
+  BINARY_NAME: aegis
+  MAIN_PACKAGE: ./cmd/aegis
+  COVERAGE_FILE: coverage.out
+
+env:
+  CGO_ENABLED: "0"
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  # === Development ===
+
+  dev:
+    desc: Run Agent Aegis locally with hot reload
+    deps: [install-deps]
+    cmds:
+      - go run {{.MAIN_PACKAGE}} --config config/policy.yaml
+
+  run:
+    desc: Build and run Agent Aegis
+    deps: [build]
+    cmds:
+      - ./bin/{{.BINARY_NAME}} --config config/policy.yaml
+
+  build:
+    desc: Build the binary
+    cmds:
+      - mkdir -p bin
+      - go build -o bin/{{.BINARY_NAME}} {{.MAIN_PACKAGE}}
+    sources:
+      - "**/*.go"
+    generates:
+      - bin/{{.BINARY_NAME}}
+
+  # === Testing ===
+
+  test:
+    desc: Run all tests (unit and integration)
+    cmds:
+      - go test -v -race -tags=integration ./...
+
+  test:unit:
+    desc: Run unit tests with coverage
+    cmds:
+      - go test -v -race -coverprofile={{.COVERAGE_FILE}} -covermode=atomic ./internal/...
+      - go tool cover -func={{.COVERAGE_FILE}}
+
+  test:integration:
+    desc: Run integration tests
+    cmds:
+      - go test -v -race -tags=integration ./tests/integration/...
+
+  coverage:
+    desc: Generate and open coverage report
+    deps: [test:unit]
+    cmds:
+      - go tool cover -html={{.COVERAGE_FILE}} -o coverage.html
+      - echo "Coverage report generated at coverage.html"
+
+  # === Linting & Formatting ===
+
+  fmt:
+    desc: Format Go code
+    cmds:
+      - go fmt ./...
+      - gofmt -s -w .
+
+  lint:
+    desc: Run linter
+    cmds:
+      - golangci-lint run ./... || echo "Install golangci-lint for full linting"
+
+  vet:
+    desc: Run go vet, examines Go source code and reports suspicious constructs
+    cmds:
+      - go vet ./...
+
+  # === CI ===
+
+  ci:
+    desc: Run the same checks as CI
+    cmds:
+      - task: fmt
+      - task: vet
+      - task: test
+      - echo "✅ All CI checks passed"
+
+  # === Dependencies ===
+
+  install-deps:
+    desc: Install Go dependencies
+    cmds:
+      - go mod download
+      - go mod tidy
+    sources:
+      - go.mod
+      - go.sum
+    method: checksum
+
+  deps:
+    desc: Verify and tidy dependencies
+    cmds:
+      - go mod verify
+      - go mod tidy
+
+  # === Demo ===
+
+  demo:
+    desc: "🚀 Run a quick demo showing authorization in action"
+    deps: [build]
+    cmds:
+      - |
+        echo "🛡️  Agent Aegis Demo"
+        echo "==================="
+        echo ""
+
+        # Start executor in background
+        echo "Starting mock executor on :8082..."
+        EXECUTOR_PORT=8082 ./bin/aegis-mock-executor &
+        EXEC_PID=$!
+        sleep 1
+
+        # Start Aegis in background  
+        echo "Starting Agent Aegis on :8080..."
+        ./bin/{{.BINARY_NAME}} --port 8080 --executor-url http://localhost:8082 &
+        AEGIS_PID=$!
+        sleep 1
+
+        echo ""
+        echo "Generating token with scopes: tools:demo:read, tools:status:read"
+        TOKEN=$(go run ./tools/token-generator -sub demo@example.com -scopes tools:demo:read,tools:status:read 2>/dev/null | grep -A1 "======" | tail -1)
+
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "✅ Test 1: ALLOWED - get_weather (has tools:demo:read)"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        curl -s -X POST http://localhost:8080/execute \
+          -H "Authorization: Bearer $TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{"tool": "get_weather", "args": {"location": "London"}}' | jq .
+
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🚫 Test 2: DENIED - list_issues (missing tools:issues:read)"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        curl -s -X POST http://localhost:8080/execute \
+          -H "Authorization: Bearer $TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{"tool": "list_issues", "args": {"project": "demo"}}' | jq .
+
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🚫 Test 3: DENIED - unknown tool (not in policy)"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        curl -s -X POST http://localhost:8080/execute \
+          -H "Authorization: Bearer $TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{"tool": "hack_the_planet", "args": {}}' | jq .
+
+        echo ""
+        echo "✨ Demo complete! Stopping services..."
+        kill $AEGIS_PID $EXEC_PID 2>/dev/null || true
+
+  demo:executor:
+    desc: Run the mock tool executor for testing
+    deps: [build:executor]
+    cmds:
+      - ./bin/aegis-mock-executor
+
+  demo:ollama:
+    desc: Run the Ollama E2E demo (requires Ollama + services running)
+    cmds:
+      - AEGIS_URL=http://localhost:8080 go run ./examples/ollama-demo/main.go
+
+  demo:e2e:
+    desc: Run full E2E demo with Ollama (uses llama3.1:8b)
+    deps: [build, build:executor]
+    cmds:
+      - |
+        # Kill any existing processes
+        pkill -f "aegis-mock-executor" 2>/dev/null || true
+        pkill -f "bin/aegis" 2>/dev/null || true
+        sleep 1
+
+        echo "Starting mock executor in background..."
+        EXECUTOR_PORT=8082 ./bin/aegis-mock-executor &
+        sleep 1
+
+        echo "Starting Agent Aegis..."
+        ./bin/{{.BINARY_NAME}} --port 8080 --executor-url http://localhost:8082 &
+        sleep 1
+
+        echo "Running Ollama demo with llama3.1:8b..."
+        AEGIS_URL=http://localhost:8080 OLLAMA_MODEL=llama3.1:8b go run ./examples/ollama-demo/main.go
+
+        echo "Demo complete! Cleaning up..."
+        pkill -f "aegis-mock-executor" 2>/dev/null || true
+        pkill -f "bin/aegis" 2>/dev/null || true
+
+  build:executor:
+    desc: Build the mock executor
+    cmds:
+      - mkdir -p bin
+      - go build -o bin/aegis-mock-executor ./examples/mock-executor/main.go
+    sources:
+      - examples/mock-executor/*.go
+    generates:
+      - bin/aegis-mock-executor
+
+  # === Utilities ===
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf bin/
+      - rm -f {{.COVERAGE_FILE}} coverage.html
+
+  generate:token:
+    desc: Generate a test JWT token for development
+    cmds:
+      - go run ./tools/token-generator/main.go {{.CLI_ARGS}}
+
+  help:
+    desc: Show help about the project
+    cmds:
+      - |
+        echo "🛡️  Agent Aegis - Identity-Aware Tool Gateway"
+        echo ""
+        echo "Common commands:"
+        echo "  task dev          - Run locally for development"
+        echo "  task test         - Run all tests"
+        echo "  task ci           - Run full CI pipeline"
+        echo "  task demo:e2e     - Run E2E demo with Ollama"
+        echo ""
+        echo "Run 'task --list' for all available commands"
