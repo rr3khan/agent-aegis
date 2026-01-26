@@ -10,6 +10,12 @@ It's designed to sit _in front of_ a tool execution layer, so that:
 
 ---
 
+## Demo
+
+[Watch the demo video](media/agent-aegis-demo.mov)
+
+---
+
 ## Quick Start
 
 ```bash
