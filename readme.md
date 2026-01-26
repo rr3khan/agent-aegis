@@ -10,9 +10,9 @@ It's designed to sit _in front of_ a tool execution layer, so that:
 
 ---
 
-## Demo
+## 🎬 Demo
 
-[Watch the demo video](media/agent-aegis-demo.mov)
+https://github.com/user-attachments/assets/429be2e9-6ca2-490c-b6dd-5c23646b4a41
 
 ---
 
